@@ -19,11 +19,11 @@ import graphlca
 
 class LCATest(unittest.TestCase):
 
-#test inserts add edegs properly,instantiate and test a graph edges
+    #test inserts add edegs properly,instantiate and test a graph edges
     def test_insert(self):
         self.assertItemsEqual({},{})
 
-#test Lca should return correct key of LCA
+    #test Lca should return correct key of LCA
     def test_LCA(self):
         self.assertEqual("","")
 
