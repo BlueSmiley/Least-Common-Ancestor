@@ -11,9 +11,10 @@ class LCAGraph(object):
             return True
 
     def add_edge(self,src_node,dest_node):
-        if src_node not in self.graph:
-            self.add_node(src_node)
-        if dest_node not in self.graph[src_node]:
+        self.add_node(src_node)
+        self.add_node(dest_node)
+        if( len(self.graph[src_node]) < 2 and 
+                dest_node not in self.graph[src_node]):
             self.graph[src_node].append(dest_node)
             return True
         else:
@@ -25,7 +26,7 @@ class LCAGraph(object):
     def lowest_common_ancestor(self,root,node1,node2):
         nodelist = []
         node = self.lca(root,node1,node2,nodelist)
-        if(sorted(nodelist) == sorted([node1,node2])):
+        if(set(nodelist) == set([node1,node2])):
             return node
         return None
 
@@ -38,8 +39,14 @@ class LCAGraph(object):
         if root == node1 or root == node2:
             nodelist.append(root)
         #recursive search through tree
-        left = self.lca(self.graph[root][0],node1,node2,nodelist)
-        right = self.lca(self.graph[root][1],node1,node2,nodelist)
+        if len(self.graph[root]) > 0:
+            left = self.lca(self.graph[root][0],node1,node2,nodelist)
+        else:
+            left = None
+        if len(self.graph[root]) > 1:
+            right = self.lca(self.graph[root][1],node1,node2,nodelist)
+        else:
+            right = None
 
         #if a node found on both sides then replace lca with this node
         if(left != None and right != None):

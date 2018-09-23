@@ -25,8 +25,10 @@ class LCATest(unittest.TestCase):
         graph = LCAGraph()
         root = 0
         graph.add_node(root)
+        self.assertItemsEqual(graph.edges(root),[])
         graph.add_edge(root,1)
         self.assertItemsEqual(graph.edges(root),[1])
+        self.assertItemsEqual(graph.edges(1),[])
         graph.add_edge(root,1)
         self.assertItemsEqual(graph.edges(root),[1])
         #No assertItemsNotEqual so have to do this
@@ -46,7 +48,26 @@ class LCATest(unittest.TestCase):
 
     #test Lca should return correct key of LCA
     def test_LCA(self):
-        self.assertEqual("","")
+        graph = LCAGraph()
+        root = 1
+        graph.add_node(root)
+        graph.add_edge(root,2)
+        graph.add_edge(root,3)
+        graph.add_edge(2,4)
+        graph.add_edge(2,5)
+        graph.add_edge(3,6)
+        graph.add_edge(3,7)
+        self.assertEqual(graph.lowest_common_ancestor(root,4,5),2)
+        self.assertEqual(graph.lowest_common_ancestor(root,4,6),1)
+        self.assertEqual(graph.lowest_common_ancestor(root,3,4),1)
+        self.assertEqual(graph.lowest_common_ancestor(root,2,4),2)
+        self.assertEqual(graph.lowest_common_ancestor(root,1,4),1)
+        graph.add_node(9)
+        self.assertIsNone(graph.lowest_common_ancestor(root,2,8))
+        self.assertIsNone(graph.lowest_common_ancestor(root,1,9))
+        self.assertEqual(graph.lowest_common_ancestor(root,1,1),1)
+        self.assertEqual(graph.lowest_common_ancestor(root,2,1),1)
+        self.assertEqual(graph.lowest_common_ancestor(root,2,2),2)
 
 if __name__ == "__main__":
     unittest.main()
