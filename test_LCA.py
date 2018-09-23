@@ -15,13 +15,34 @@
 # Might borrow code so might not have proper test constraints
 
 import unittest
-import graphlca
+from graphlca import LCAGraph
+from collections import Counter
 
 class LCATest(unittest.TestCase):
 
     #test inserts add edegs properly,instantiate and test a graph edges
     def test_insert(self):
-        self.assertItemsEqual({},{})
+        graph = LCAGraph()
+        root = 0
+        graph.add_node(root)
+        graph.add_edge(root,1)
+        self.assertItemsEqual(graph.edges(root),[1])
+        graph.add_edge(root,1)
+        self.assertItemsEqual(graph.edges(root),[1])
+        #No assertItemsNotEqual so have to do this
+        self.assertNotEqual(Counter(iter(graph.edges(root))),  
+                     Counter(iter([1,1])))
+        graph.add_edge(root,2)
+        self.assertItemsEqual(graph.edges(root),[1,2])
+        graph.add_edge(1,3)
+        graph.add_edge(1,5)
+        graph.add_edge(2,4)
+        self.assertItemsEqual(graph.edges(1),[5,3])
+        self.assertItemsEqual(graph.edges(1),[3,5])
+        self.assertItemsEqual(graph.edges(2),[4])
+
+
+
 
     #test Lca should return correct key of LCA
     def test_LCA(self):

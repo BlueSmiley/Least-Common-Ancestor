@@ -1,4 +1,4 @@
-class LCAGraph:
+class LCAGraph(object):
     #Constructor
     def __init__(self):
         self.graph = {}
@@ -19,6 +19,9 @@ class LCAGraph:
         else:
             return False
     
+    def edges(self,node):
+        return self.graph[node]
+
     def lowest_common_ancestor(self,root,node1,node2):
         nodelist = []
         node = self.lca(root,node1,node2,nodelist)
