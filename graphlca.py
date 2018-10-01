@@ -23,28 +23,26 @@ class LCAGraph(object):
     def edges(self,node):
         return self.graph[node]
 
-    def lowest_common_ancestor(self,root,node1,node2):
-        nodelist = []
-        node = self.lca(root,node1,node2,nodelist)
-        if(set(nodelist) == set([node1,node2])):
+    def lowest_common_ancestor(self,root,nodelist):
+        nodelist = list(set(nodelist))
+        matchedlist = []
+        node = self.lca(root,nodelist,matchedlist)
+        if(set(nodelist) == set(matchedlist)):
             return node
         return None
 
     #credit to https://dxmahata.gitbooks.io/leetcode-python-solutions/lowest_common_ancestor_in_a_binary_tree.html for solution
-    def lca(self,root,node1,node2,nodelist):
+    def lca(self,root,nodelist,matchedlist):
         #recurse when reach null node
         if root == None:
             return None
-        #for end comparison to see if all nodes are in same component
-        if root == node1 or root == node2:
-            nodelist.append(root)
         #recursive search through tree
         if len(self.graph[root]) > 0:
-            left = self.lca(self.graph[root][0],node1,node2,nodelist)
+            left = self.lca(self.graph[root][0],nodelist,matchedlist)
         else:
             left = None
         if len(self.graph[root]) > 1:
-            right = self.lca(self.graph[root][1],node1,node2,nodelist)
+            right = self.lca(self.graph[root][1],nodelist,matchedlist)
         else:
             right = None
 
@@ -52,10 +50,13 @@ class LCAGraph(object):
         if(left != None and right != None):
             return root
         #if root == node then return root
-        elif root == node1 or root == node2:
-            return root
+        #also add node to list of found nodes to check at end if all found
+        for node in nodelist:
+            if root == node:
+                matchedlist.append(root)
+                return root
         #else return whichever side has the node or if neither then return None
-        elif left != None:
+        if left != None:
             return left
         else:
             return right
