@@ -69,30 +69,30 @@ class LCATest(unittest.TestCase):
         graph.add_edge(2,5)
         graph.add_edge(3,6)
         graph.add_edge(3,7)
-        self.assertEqual(graph.lowest_common_ancestor(root,4,5),2,
+        self.assertEqual(graph.lowest_common_ancestor(root,[4,5]),2,
         "two leaf nodes same parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,4,6),1,
+        self.assertEqual(graph.lowest_common_ancestor(root,[4,6]),1,
         "two leaf nodes different parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,3,4),1,
+        self.assertEqual(graph.lowest_common_ancestor(root,[3,4]),1,
         "one leaf node and one non-leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,2,4),2,
+        self.assertEqual(graph.lowest_common_ancestor(root,[2,4]),2,
         "parent and child leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,1,4),1,
+        self.assertEqual(graph.lowest_common_ancestor(root,[1,4]),1,
         "leaf node and root with params swapped")
         graph.add_node(9)
         # checking doesnt give false positives
-        self.assertIsNone(graph.lowest_common_ancestor(root,2,8),
+        self.assertIsNone(graph.lowest_common_ancestor(root,[2,8]),
         "lca non-existent node")
-        self.assertIsNone(graph.lowest_common_ancestor(root,1,9),
+        self.assertIsNone(graph.lowest_common_ancestor(root,[1,9]),
         "lca disconnected node")
-        self.assertIsNone(graph.lowest_common_ancestor(2,3,6),
+        self.assertIsNone(graph.lowest_common_ancestor(2,[3,6]),
         "Doesnt recurse past root and treats as seperate components")
         # checking gives correct answer if two params same
-        self.assertEqual(graph.lowest_common_ancestor(root,1,1),1,
+        self.assertEqual(graph.lowest_common_ancestor(root,[1,1]),1,
         "root and both nodes root")
-        self.assertEqual(graph.lowest_common_ancestor(root,2,1),1,
+        self.assertEqual(graph.lowest_common_ancestor(root,[2,1]),1,
         "root and child node with lca = root")
-        self.assertEqual(graph.lowest_common_ancestor(root,2,2),2,
+        self.assertEqual(graph.lowest_common_ancestor(root,[2,2]),2,
         "child with both nodes child")
 
         # test for other comparable objects as keys to make sure it still works
@@ -109,30 +109,30 @@ class LCATest(unittest.TestCase):
         graph.add_edge("2","5")
         graph.add_edge("3","6")
         graph.add_edge("3","7")
-        self.assertEqual(graph.lowest_common_ancestor(root,"4","5"),"2",
+        self.assertEqual(graph.lowest_common_ancestor(root,["4","5"]),"2",
         "two leaf nodes same parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,"4","6"),"1",
+        self.assertEqual(graph.lowest_common_ancestor(root,["4","6"]),"1",
         "two leaf nodes different parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,"3","4"),"1",
+        self.assertEqual(graph.lowest_common_ancestor(root,["3","4"]),"1",
         "one leaf node and one non-leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,"2","4"),"2",
+        self.assertEqual(graph.lowest_common_ancestor(root,["2","4"]),"2",
         "parent and child leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,"1","4"),"1",
+        self.assertEqual(graph.lowest_common_ancestor(root,["1","4"]),"1",
         "leaf node and root with params swapped")
         graph.add_node("9")
         # checking doesnt give false positives
-        self.assertIsNone(graph.lowest_common_ancestor(root,"2","8"),
+        self.assertIsNone(graph.lowest_common_ancestor(root,["2","8"]),
         "lca non-existent node")
-        self.assertIsNone(graph.lowest_common_ancestor(root,"1","9"),
+        self.assertIsNone(graph.lowest_common_ancestor(root,["1","9"]),
         "lca disconnected node")
-        self.assertIsNone(graph.lowest_common_ancestor("2","3","6"),
+        self.assertIsNone(graph.lowest_common_ancestor("2",["3","6"]),
         "Doesnt recurse past root and treats as seperate components")
         # checking gives correct answer if two params same
-        self.assertEqual(graph.lowest_common_ancestor(root,"1","1"),"1",
+        self.assertEqual(graph.lowest_common_ancestor(root,["1","1"]),"1",
         "root and both nodes root")
-        self.assertEqual(graph.lowest_common_ancestor(root,"2","1"),"1",
+        self.assertEqual(graph.lowest_common_ancestor(root,["2","1"]),"1",
         "root and child node with lca = root")
-        self.assertEqual(graph.lowest_common_ancestor(root,"2","2"),"2",
+        self.assertEqual(graph.lowest_common_ancestor(root,["2","2"]),"2",
         "child with both nodes child")
 
 
