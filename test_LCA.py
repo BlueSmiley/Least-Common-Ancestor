@@ -7,7 +7,7 @@ from collections import Counter
 class LCATest(unittest.TestCase):
 
     # test inserts add edegs properly,instantiate and test a graph edges
-    def test_insert(self):
+    def test_int_insert(self):
         graph = LCAGraph()
         root = 0
         graph.add_node(root)
@@ -27,7 +27,7 @@ class LCATest(unittest.TestCase):
         graph.add_edge(1,6)
         self.assertItemsEqual(graph.edges(1),[3,5],"node third child ignored")
 
-        # test for other comparable objects as keys to make sure it still works 
+    def test_string_insert(self):
         graph = LCAGraph()
         root = "root"
         graph.add_node(root)
@@ -59,7 +59,7 @@ class LCATest(unittest.TestCase):
 
 
     # test Lca should return correct key of LCA
-    def test_LCA(self):
+    def test_int_LCA(self):
         graph = LCAGraph()
         root = 1
         graph.add_node(root)
@@ -99,6 +99,7 @@ class LCATest(unittest.TestCase):
         # Sort of unnescary I think but just to make sure my lca is generalised
         # I feel this is the wrong way to go about it, but dont know right way
         # Better than no check I think
+    def test_string_LCA(self):
         graph = LCAGraph()
         root = "1"
         graph.add_node(root)
