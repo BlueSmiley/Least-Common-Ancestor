@@ -5,6 +5,10 @@ from graphlca import LCAGraph
 from collections import Counter
 
 class LCATest(unittest.TestCase):
+    # test for other comparable objects as keys to make sure it still works
+    # Sort of unnescary I think but just to test my lca is generalised
+    # I feel this is the wrong way to go about it, but dont know right way
+    # Better than no check I think
 
     # test inserts add edegs properly,instantiate and test a graph edges
     def test_int_insert(self):
@@ -26,6 +30,8 @@ class LCATest(unittest.TestCase):
         self.assertItemsEqual(graph.edges(2),[4]),"non-root one child"
         graph.add_edge(1,6)
         self.assertItemsEqual(graph.edges(1),[3,5],"node third child ignored")
+        graph.add_edge(4,1)
+        self.assertItemsEqual(graph.edges(4),[],"no multiple links or duplicates")
 
     def test_string_insert(self):
         graph = LCAGraph()
@@ -53,6 +59,8 @@ class LCATest(unittest.TestCase):
         graph.add_edge("rootchild1","1child3")
         self.assertItemsEqual(graph.edges("rootchild1"),["1child2","1child1"],
         "node third child ignored")
+        graph.add_edge("2child1","rootchild1")
+        self.assertItemsEqual(graph.edges("2child1"),[],"no multiple links or duplicates")
         
     def test_int_LCA(self):
         graph = LCAGraph()
@@ -144,11 +152,6 @@ class LCATest(unittest.TestCase):
         "8 leaf nodes: expect 1 got" + 
             str(graph.lowest_common_ancestor(root,["4","8","9"])))
 
-
-        # test for other comparable objects as keys to make sure it still works
-        # Sort of unnescary I think but just to make sure my lca is generalised
-        # I feel this is the wrong way to go about it, but dont know right way
-        # Better than no check I think
     def test_string_LCA(self):
         graph = LCAGraph()
         root = "1"
