@@ -54,11 +54,6 @@ class LCATest(unittest.TestCase):
         self.assertItemsEqual(graph.edges("rootchild1"),["1child2","1child1"],
         "node third child ignored")
         
-
-
-
-
-    # test Lca should return correct key of LCA
     def test_int_LCA(self):
         graph = LCAGraph()
         root = 1
@@ -94,6 +89,61 @@ class LCATest(unittest.TestCase):
         "root and child node with lca = root")
         self.assertEqual(graph.lowest_common_ancestor(root,[2,2]),2,
         "child with both nodes child")
+    
+    def test_int_mulitple_nodes_LCA(self):
+        graph = LCAGraph()
+        root = 1
+        graph.add_node(root)
+        graph.add_edge(root,2)
+        graph.add_edge(root,3)
+        graph.add_edge(2,4)
+        graph.add_edge(2,5)
+        graph.add_edge(3,6)
+        graph.add_edge(3,7)
+        graph.add_edge(4,8)
+        graph.add_edge(4,9)
+        graph.add_edge(5,10)
+        graph.add_edge(5,11)
+        graph.add_edge(6,12)
+        graph.add_edge(6,13)
+        graph.add_edge(7,14)
+        graph.add_edge(7,15)
+        self.assertEqual(graph.lowest_common_ancestor(root,[8,9,11,10]),2,
+        "4 leaf nodes")
+        self.assertEqual(graph.lowest_common_ancestor(root,[8,9,4]),4,
+        "2 leaf nodes and parent:expected 4 but got" + 
+            str(graph.lowest_common_ancestor(root,[4,8,9])))
+        self.assertEqual(graph.lowest_common_ancestor(root,[8,9,12,13,10,11,14,15]),root,
+        "8 leaf nodes: expect 1 got" + 
+            str(graph.lowest_common_ancestor(root,[4,8,9])))
+
+    def test_string_mulitple_nodes_LCA(self):
+        graph = LCAGraph()
+        root = "1"
+        graph.add_node(root)
+        graph.add_edge(root,"2")
+        graph.add_edge(root,"3")
+        graph.add_edge("2","4")
+        graph.add_edge("2","5")
+        graph.add_edge("3","6")
+        graph.add_edge("3","7")
+        graph.add_edge("4","8")
+        graph.add_edge("4","9")
+        graph.add_edge("5","10")
+        graph.add_edge("5","11")
+        graph.add_edge("6","12")
+        graph.add_edge("6","13")
+        graph.add_edge("7","14")
+        graph.add_edge("7","15")
+        self.assertEqual(graph.lowest_common_ancestor(root,["8","9","11","10"]),"2",
+        "4 leaf nodes")
+        self.assertEqual(graph.lowest_common_ancestor(root,["8","9","4"]),"4",
+        "2 leaf nodes and parent:expected 4 but got" + 
+            str(graph.lowest_common_ancestor(root,["4","8","9"])))
+        self.assertEqual(graph.lowest_common_ancestor(root,["8","9","12","13","10","11","14","15"]),root,
+        "8 leaf nodes: expect 1 got" + 
+            str(graph.lowest_common_ancestor(root,["4","8","9"])))
+
 
         # test for other comparable objects as keys to make sure it still works
         # Sort of unnescary I think but just to make sure my lca is generalised
