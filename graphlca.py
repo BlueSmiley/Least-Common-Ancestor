@@ -17,6 +17,9 @@ class LCAGraph(object):
         """Initialises data structure to hold graph nodes and edges"""
         self.graph = {}
 
+    # Initialise an empty list on creation representing the adjacency list of
+    # a vertex. Each external vertex added to this list represents a directed 
+    # edge from this vertex to that external vertex. 
     def add_node(self,key):
         """Adds a new node to the graph given a key 
         
@@ -34,9 +37,6 @@ class LCAGraph(object):
         if not self.viable_key(key) or self.existing_node(key):
             return False
         else:
-            # Initialise an empty list representing the adjacency list of
-            # a vertex. Each vertex added to this list represents a directed 
-            # edge from this vertex to that vertex.
             self.graph[key] = []    
             return True
 
@@ -46,6 +46,8 @@ class LCAGraph(object):
     def existing_node(self,key):
         return  self.viable_key(key) and key in self.graph
 
+    # Append destination vertex to adjacency list of source vertex
+    # to represent a directed edge from source to destination vertex
     def add_edge(self,src_node,dest_node):
         """Adds an edge between two nodes
 
@@ -65,16 +67,18 @@ class LCAGraph(object):
         """
 
         if( self.existing_node(src_node) and len(self.graph[src_node]) < 2):
+            for node in self.graph:
+                if dest_node in self.edges(node):
+                    return False
             if not self.existing_node(dest_node):
                 self.add_node(dest_node)
-            # Append destination vertex to adjacency list of source vertex
-            # to represent a directed edge from source to destination vertex
             self.graph[src_node].append(dest_node)
             return True
         else:
             return False
     
     def edges(self,node):
+        """Returns all directed edges from the corresponding node"""
         return self.graph[node]
 
     def lowest_common_ancestor(self,root,nodelist):
@@ -153,8 +157,7 @@ class LCAGraph(object):
 
         #else return whichever side has the node or if neither then return None
         if left != None:
-            retuancestor of those nodes if entire set can be found in the 
-        subgraph.rn left
+            return left
         else:
             return right
         
