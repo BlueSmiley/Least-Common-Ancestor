@@ -8,6 +8,10 @@ Python code for a simple inefficient algorithm to find the lowest common ancesto
 # Performance
 No properly measured or verifiable metric of performance since I can't be bothered. Estimated to run in O(VE) time where V is the number of vertices and E is the number of edges in graph as it runs an euler tour of entire graph. Uses O(N) space where N is the number of target nodes.
 
+# Algorithm
+Euler tour of entire graph where we store the common ancestor of the nodes with lowest depth find along the way. The node with the lowest depth found between the first match of a node in the nodelist and the last matched node is a common ancestor. The common ancestor with the greatest depth is the lowest common ancestor.
+![diagram](./explanation.png)
+
 # API Reference
 **Valid keys - All non-None values that implement \_\_eq\_\_() and \_\_hash\_\_()**
 
