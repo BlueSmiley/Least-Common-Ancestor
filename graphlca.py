@@ -5,11 +5,11 @@ class LCAGraph(object):
     Create graphs with which the lowest common ancestor of nodes can be found
 
     Offers functionality to add nodes and edges between nodes to an instance
-    of the class which represents a directed acyclic graph. Allows keys of any
-    type for nodes as long as __eq__ is implemented and the key is not None.
-    Graph represented by a binary tree where each node can only have a maximum
-    of two child nodes.
-
+    of the class which represents a directed acyclic graph.
+    Allows keys of any type for nodes as long as __eq__ and __hash__ is 
+    implemented and the key is not None.
+    Graph represented by a binary tree where each node can only have 
+    a maximum of two child nodes.
     Edges to non-existent nodes instantiates the node as a new node
     """
 
@@ -41,9 +41,11 @@ class LCAGraph(object):
             return True
 
     def viable_key(self,key):
+        """Returns if a key is a viable key for a node in the graph"""
         return key != None
     
     def existing_node(self,key):
+        """Returns whether a node exists in the graph or not"""
         return  self.viable_key(key) and key in self.graph
 
     # Append destination vertex to adjacency list of source vertex
@@ -66,9 +68,11 @@ class LCAGraph(object):
             succeeded or failed.
         """
 
-        if( self.existing_node(src_node) and len(self.graph[src_node]) < 2):
-            for node in self.graph:
-                if dest_node in self.edges(node):
+        if self.existing_node(src_node):
+            if dest_node in self.edges(src_node):
+                return False
+            if (self.existing_node(dest_node) and 
+                self.descendant(src_node,dest_node)):
                     return False
             if not self.existing_node(dest_node):
                 self.add_node(dest_node)
@@ -76,6 +80,30 @@ class LCAGraph(object):
             return True
         else:
             return False
+    
+    def descendant(self,src_node,dest_node):
+        """Finds if a node is a descendant of another node in a graph
+        
+        Searches through graph to see if a target node is either the child of a 
+        chosen node or the child of a node that is itself a child of the chosen
+        node.
+
+        Args:
+            src_node: The chosen node from which the search begins
+            dest_node: The target node being checked if is a descendant of the
+                src_node
+        
+        Returns:
+            A boolean representing whether the target node is a descendant of
+            the chosen node or not.
+        """
+        if src_node == dest_node:
+            return True
+        for child in self.edges(src_node):
+            if self.descendant(child,dest_node):
+                return True
+        return False
+        
     
     def edges(self,node):
         """Returns all directed edges from the corresponding node"""
@@ -101,64 +129,86 @@ class LCAGraph(object):
             lowest common ancestor.
         """
 
+        # Method to remove duplicate elements from list
+        # Requires elements implement __hash__() and __eq__() correctly
+        # Which is required by a dictionary anyway to store the nodes
+        # So no extra constraints introduced by operation
+        # A set has no duplicate elements so converting to set removes dupes
+        # Then conversion back into list so we can expicitly treat it as list
         nodelist = list(set(nodelist))
-        matchedlist = []
-        node = self.lca(root,nodelist,matchedlist)
-        if(Counter(set(nodelist)) == Counter(set(matchedlist))):
-            return node
+
+        result = self.lca(root,nodelist,[],0,(-1,None),-1)
+        lcatuple = result[1]
+        if lcatuple[1] != None:
+            return lcatuple[1]
         return None
 
-    #credit to https://dxmahata.gitbooks.io/leetcode-python-solutions/lowest_common_ancestor_in_a_binary_tree.html for solution
-    def lca(self,root,nodelist,matchedlist):
+    # Performs euler tour of graph and finds common ancestors as it continues
+    # Picks the ancestor with greatest depth as it goes along
+    # Therefore final common ancestor is the least common ancestor
+    def lca(self,current,nodelist,matchedlist,depth,foundlowest,currentlowest):
         """Recursive function to find lowest common ancestor
         
         Recursive function to find lowest common ancestor of target nodes 
         called initially by Lowest_common_ancestor with default values. 
+        Computes only a single lowest common ancestor of the graph.
 
         Args:
-            root: Current node on which the function is being called.
+            current: Current node on which the function is being called.
             nodelist: List of target nodes.
-            matchedlist: List of target nodes found so far during search
-        
+            matchedlist: List of target nodes found so far during search.
+                Used internally for recognizing euler tours that match nodes.
+                Cleared after all nodes in nodelist matched
+            depth: Number of hops/edges from the root node for the current
+                node
+            foundlowest: Tuple that contains the node and the depth of the 
+                node that is the lowest common ancestor with greatest depth
+                found so far.
+            currentlowest: Tuple that contains the node and the depth of the
+                node that is the node, with the lowest depth found in current
+                euler tour starting from the first matched node.
+         
         Returns:
-            Modifies the matchedlist whenever a target node is found. Returns 
-            None if no target node found in the current node or children of the 
-            current node. Returns the current node itself if a child found in 
-            both left and right subtrees or if the current node itself is a 
-            target node. Else if the return value of the function call on the 
-            left subtrees is not None it returns the return value. Else it 
-            returns the return value of the function call on the right subtree.
-
+            A tuple of (matchedlist,foundlowest and currentlowest), where 
+            foundlowest and currentlowest are themselves tuples of the format 
+            described above.
         """
+        if current in nodelist and current not in matchedlist:
+            matchedlist.append(current)
+            # if first match then lowest depth = current node
+            if len(matchedlist) == 1:
+                currentlowest = (depth,current)
+        # If still in matching phase and reached node with less depth, then
+        # lca always node with lowest level that is found between euler tour
+        # between target nodes
+        if len(matchedlist) > 0 and depth < currentlowest[0]:
+            currentlowest = (depth,current)
+        # If all matched and we find lca with greater depth then replace
+        # Clear matchedlist to show euler tour between target nodes complete
+        if len(matchedlist) == len(nodelist):
+            if currentlowest[0] > foundlowest[0]:
+                foundlowest = currentlowest 
+            matchedlist = []
+        # Continue dfs/euler tour of entire tree
+        for child in self.edges(current):
+            # replace matchedlist,foundlowest and currentlowest with result
+            # of euler tour of child nodes
+            matchedlist,foundlowest,currentlowest = self.lca(child,nodelist,
+                matchedlist,depth+1,foundlowest,currentlowest)
+            # Repeat procedure used at start 
+            if current in nodelist and current not in matchedlist:
+                matchedlist.append(current)
+                if len(matchedlist) == 1:
+                    currentlowest = (depth,current)
+            if len(matchedlist) > 0 and depth < currentlowest[0]:
+                currentlowest = (depth,current)
+            if len(matchedlist) == len(nodelist):
+                if currentlowest[0] > foundlowest[0]:
+                    foundlowest = currentlowest 
+                matchedlist = []
+        
+        return matchedlist,foundlowest,currentlowest
+        
 
-        #recurse when reach null node
-        if root == None:
-            return None
-        #recursive search through tree
-        if len(self.graph[root]) > 0:
-            left = self.lca(self.graph[root][0],nodelist,matchedlist)
-        else:
-            left = None
-        if len(self.graph[root]) > 1:
-            right = self.lca(self.graph[root][1],nodelist,matchedlist)
-        else:
-            right = None
-
-        #if root == node then return root
-        #also add node to list of found nodes to check at end if all found
-        for node in nodelist:
-            if root == node:
-                matchedlist.append(root)
-                return root
-
-        #if a node found on both sides then replace lca with this node
-        if(left != None and right != None):
-            return root
-
-        #else return whichever side has the node or if neither then return None
-        if left != None:
-            return left
-        else:
-            return right
         
 

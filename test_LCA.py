@@ -23,11 +23,7 @@ class LCATest(unittest.TestCase):
         graph.add_edge(1,5)
         graph.add_edge(2,4)
         self.assertItemsEqual(graph.edges(1),[5,3],"non-root two children")
-        self.assertItemsEqual(graph.edges(2),[4]),"non-root one child"
-        graph.add_edge(1,6)
-        self.assertItemsEqual(graph.edges(1),[3,5],"node third child ignored")
-        graph.add_edge(4,1)
-        self.assertItemsEqual(graph.edges(4),[],"no multiple links or duplicates")
+        self.assertItemsEqual(graph.edges(2),[4],"non-root one child")
         
     def test_LCA(self):
         graph = LCAGraph()
@@ -39,10 +35,13 @@ class LCATest(unittest.TestCase):
         graph.add_edge(2,5)
         graph.add_edge(3,6)
         graph.add_edge(3,7)
-        self.assertEqual(graph.lowest_common_ancestor(root,[4,5]),2,
-        "two leaf nodes same parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,[4,6]),1,
-        "two leaf nodes different parent")
+        value = graph.lowest_common_ancestor(root,[4,5])
+        self.assertEqual(value,2,
+        "two leaf nodes same parent.%nExpected 2 but got " + str(value))
+        value = graph.lowest_common_ancestor(root,[4,6])
+        result = 1
+        self.assertEqual(value,result,
+        "two leaf nodes different parent.%n" + str(result) + ":" + str(value))
         self.assertEqual(graph.lowest_common_ancestor(root,[3,4]),1,
         "one leaf node and one non-leaf node")
         self.assertEqual(graph.lowest_common_ancestor(root,[2,4]),2,
