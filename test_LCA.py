@@ -24,6 +24,9 @@ class LCATest(unittest.TestCase):
         graph.add_edge(2,4)
         self.assertItemsEqual(graph.edges(1),[5,3],"non-root two children")
         self.assertItemsEqual(graph.edges(2),[4],"non-root one child")
+        graph.add_edge(4,root)
+        self.assertItemsEqual(graph.edges(4),[],"No loops.[]:" + 
+        str(graph.edges(4)))
         
     def test_LCA(self):
         graph = LCAGraph()

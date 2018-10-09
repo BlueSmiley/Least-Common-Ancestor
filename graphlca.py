@@ -72,7 +72,7 @@ class LCAGraph(object):
             if dest_node in self.edges(src_node):
                 return False
             if (self.existing_node(dest_node) and 
-                self.descendant(src_node,dest_node)):
+                self.descendant(dest_node,src_node)):
                     return False
             if not self.existing_node(dest_node):
                 self.add_node(dest_node)
