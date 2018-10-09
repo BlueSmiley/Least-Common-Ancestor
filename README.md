@@ -2,6 +2,14 @@
 
 A repository for software engineering project 1
 
+# Table of Contents
+---
+1. [Finding Lowest Common Ancestor of a Directed Acyclic Graph](#finding-lowest-common-ancestor-of-a-directed-acyclic-graph)
+2. [Performance](#performance)
+3. [Algorithm](#algorithm)
+4. [API Reference](#-api-reference)
+5. [License](#license)
+
 # Finding Lowest Common Ancestor of a Directed Acyclic Graph
 Python code for a simple inefficient algorithm to find the lowest common ancestor of a list of target nodes of a directed acyclic graph. Graph represented by an adjacency list data structure using built in dictionaries and lists. 
 
