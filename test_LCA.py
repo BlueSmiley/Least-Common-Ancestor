@@ -175,34 +175,40 @@ class LCATest(unittest.TestCase):
         graph.add_edge(TestNums(3),TestNums(4))
         graph.add_edge(TestNums(2),TestNums(5))
         graph.add_edge(TestNums(3),TestNums(5))
-        self.assertEqual(graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5)]),TestNums(3),
-            "TestNums(2) leaf nodes:expected TestNums(3) but got " + 
-            str(graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5)])))
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5)])
+        expect = TestNums(3)
+        self.assertEqual(result,expect,"2 leaf nodes: exp= " + 
+                        str(expect) + " res= " + str(result))
+
         result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5),TestNums(3)])
         expect = TestNums(3)
-        self.assertEqual(result,expect,"three nodes one parent:" + 
-                        str(expect) + ":" + str(result))
+        self.assertEqual(result,expect,"three nodes one parent: exp= " + 
+                        str(expect) + " res= " + str(result))
+
         graph.add_edge(root,TestNums(6))
         result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5),TestNums(6)])
         expect = root
-        self.assertEqual(result,expect,"three leaf nodes different branches:" + 
-                        str(expect) + ":" + str(result))
+        self.assertEqual(result,expect,"three leaf nodes different branches: exp=" + 
+                        str(expect) + " res=" + str(result))
+
         graph.add_edge(TestNums(2),TestNums(7))
         result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5),TestNums(7)])
         expect = TestNums(2)
-        self.assertEqual(result,expect,"three leaf nodes same parent:" + 
-                        str(expect) + ":" + str(result))
+        self.assertEqual(result,expect,"three leaf nodes same parent: exp=" + 
+                        str(expect) + " res=" + str(result))
+        
         graph.add_edge(TestNums(6),TestNums(7))
         graph.add_edge(TestNums(6),TestNums(8))
         graph.add_edge(TestNums(2),TestNums(8))
         result = graph.lowest_common_ancestor(root,[TestNums(8),TestNums(7)])
         expect = TestNums(2)
-        self.assertEqual(result,expect,"two lcas-should pick first one:" + 
-                        str(expect) + ":" + str(result))
+        self.assertEqual(result,expect,"two lcas-should pick first one: exp=" + 
+                        str(expect) + " res=" + str(result))
+        
         result = graph.lowest_common_ancestor(root,[TestNums(7),TestNums(7)])
         expect = TestNums(7)
-        self.assertEqual(result,expect,"Same node twice:" + 
-                        str(expect) + ":" + str(result))
+        self.assertEqual(result,expect,"Same node twice: exp=" + 
+                        str(expect) + " res=" + str(result))
 
 class TestNums(object):
     # Test object, also implements str for easy debugging in unit test
