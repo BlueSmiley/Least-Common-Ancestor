@@ -59,6 +59,8 @@ class LCATest(unittest.TestCase):
         "lca disconnected node")
         self.assertIsNone(graph.lowest_common_ancestor(2,[3,6]),
         "Doesnt recurse past root and treats as seperate components")
+        self.assertIsNone(graph.lowest_common_ancestor(root,[]),
+        "Empty node list")
         # checking gives correct answer if two params same
         self.assertEqual(graph.lowest_common_ancestor(root,[1,1]),1,
         "root and both nodes root")
@@ -105,8 +107,33 @@ class LCATest(unittest.TestCase):
         graph.add_edge(2,5)
         graph.add_edge(3,5)
         self.assertEqual(graph.lowest_common_ancestor(root,[4,5]),3,
-        "2 leaf nodes:expected 3 but got " + 
+            "2 leaf nodes:expected 3 but got " + 
             str(graph.lowest_common_ancestor(root,[4,5])))
+        result = graph.lowest_common_ancestor(root,[4,5,3])
+        expect = 3
+        self.assertEqual(result,expect,"three nodes one parent:" + 
+                        str(expect) + ":" + str(result))
+        graph.add_edge(root,6)
+        result = graph.lowest_common_ancestor(root,[4,5,6])
+        expect = root
+        self.assertEqual(result,expect,"three leaf nodes different branches:" + 
+                        str(expect) + ":" + str(result))
+        graph.add_edge(2,7)
+        result = graph.lowest_common_ancestor(root,[4,5,7])
+        expect = 2
+        self.assertEqual(result,expect,"three leaf nodes same parent:" + 
+                        str(expect) + ":" + str(result))
+        graph.add_edge(6,7)
+        graph.add_edge(6,8)
+        graph.add_edge(2,8)
+        result = graph.lowest_common_ancestor(root,[8,7])
+        expect = 2
+        self.assertEqual(result,expect,"two lcas-should pick first one:" + 
+                        str(expect) + ":" + str(result))
+        result = graph.lowest_common_ancestor(root,[7,7])
+        expect = 7
+        self.assertEqual(result,expect,"Same node twice:" + 
+                        str(expect) + ":" + str(result))
 
 
 if __name__ == "__main__":

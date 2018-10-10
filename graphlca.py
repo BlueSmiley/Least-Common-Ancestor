@@ -136,8 +136,10 @@ class LCAGraph(object):
         # A set has no duplicate elements so converting to set removes dupes
         # Then conversion back into list so we can expicitly treat it as list
         nodelist = list(set(nodelist))
-
-        result = self.lca(root,nodelist,[],0,(-1,None),-1)
+        # Minor performance optimisation
+        if(len(nodelist)==0):
+            return None
+        result = self.lca(root,nodelist,[],0,(-1,None),(-1,None))
         lcatuple = result[1]
         if lcatuple[1] != None:
             return lcatuple[1]
