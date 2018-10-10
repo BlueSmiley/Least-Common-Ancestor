@@ -5,189 +5,227 @@ from graphlca import LCAGraph
 from collections import Counter
 
 class LCATest(unittest.TestCase):
-    # test for other comparable objects as keys to make sure it still works
-    # Sort of unnescary I think but just to test my lca is generalised
-    # I feel this is the wrong way to go about it, but dont know right way
-    # Better than no check I think
 
-    # test inserts add edegs properly,instantiate and test a graph edges
-    def test_int_insert(self):
+    # test inserts add edges properly,instantiate and test a graph edges
+    def test_insert(self):
         graph = LCAGraph()
-        root = 0
+        root = TestNums(0)
         graph.add_node(root)
-        self.assertItemsEqual(graph.edges(root),[],"checking when root empty")
-        graph.add_edge(root,1)
-        self.assertItemsEqual(graph.edges(root),[1],"root one child")
-        self.assertItemsEqual(graph.edges(1),[],"leaf node")
-        graph.add_edge(root,1)
-        self.assertItemsEqual(graph.edges(root),[1],"no duplicate edges")
-        graph.add_edge(root,2)
-        self.assertItemsEqual(graph.edges(root),[1,2],"root two children")
-        graph.add_edge(1,3)
-        graph.add_edge(1,5)
-        graph.add_edge(2,4)
-        self.assertItemsEqual(graph.edges(1),[5,3],"non-root two children")
-        self.assertItemsEqual(graph.edges(2),[4]),"non-root one child"
-        graph.add_edge(1,6)
-        self.assertItemsEqual(graph.edges(1),[3,5],"node third child ignored")
-        graph.add_edge(4,1)
-        self.assertItemsEqual(graph.edges(4),[],"no multiple links or duplicates")
 
-    def test_string_insert(self):
-        graph = LCAGraph()
-        root = "root"
-        graph.add_node(root)
-        self.assertItemsEqual(graph.edges(root),[],
-        "checking when root empty")
-        graph.add_edge(root,"rootchild1")
-        self.assertItemsEqual(graph.edges(root),["rootchild1"],
-        "root one child")
-        self.assertItemsEqual(graph.edges("rootchild1"),[],"leaf node")
-        graph.add_edge(root,"rootchild1")
-        self.assertItemsEqual(graph.edges(root),["rootchild1"],
-        "no duplicate edges")
-        graph.add_edge(root,"rootchild2")
-        self.assertItemsEqual(graph.edges(root),["rootchild1","rootchild2"],
-        "root two children")
-        graph.add_edge("rootchild1","1child1")
-        graph.add_edge("rootchild1","1child2")
-        graph.add_edge("rootchild2","2child1")
-        self.assertItemsEqual(graph.edges("rootchild1"),["1child1","1child2"],
-        "non-root two children")
-        self.assertItemsEqual(graph.edges("rootchild2"),["2child1"]),
-        "non-root one child"
-        graph.add_edge("rootchild1","1child3")
-        self.assertItemsEqual(graph.edges("rootchild1"),["1child2","1child1"],
-        "node third child ignored")
-        graph.add_edge("2child1","rootchild1")
-        self.assertItemsEqual(graph.edges("2child1"),[],"no multiple links or duplicates")
+        result = graph.edges(root)
+        expect = []
+        self.assertItemsEqual(result,expect,"checking when root empty: exp= " + 
+                            str(expect) + " res= " + str(result))
+
+        graph.add_edge(root,TestNums(1))
+        result = graph.edges(root)
+        expect = [TestNums(1)]
+        self.assertItemsEqual(result,expect,"root one child: exp= " + 
+                            str(expect) + " res= " + str(result))
+
+        result = graph.edges(TestNums(1))
+        expect = []
+        self.assertItemsEqual(result,expect,"leaf node: exp= " + 
+                            str(expect) + " res= " + str(result))
+
+        graph.add_edge(root,TestNums(1))
+        result = graph.edges(root)
+        expect = [TestNums(1)]
+        self.assertItemsEqual(result,expect,"no duplicate edges: exp= " + 
+                            str(expect) + " res= " + str(result))
+
+        graph.add_edge(root,TestNums(2))
+        result = graph.edges(root)
+        expect = [TestNums(1),TestNums(2)]
+        self.assertItemsEqual(result,expect,"root two children: exp= " + 
+                            str(expect) + " res= " + str(result))
+
+        graph.add_edge(TestNums(1),TestNums(3))
+        graph.add_edge(TestNums(1),TestNums(5))
+        graph.add_edge(TestNums(2),TestNums(4))
+        result = graph.edges(TestNums(1))
+        expect = [TestNums(5),TestNums(3)]
+        self.assertItemsEqual(result,expect,"non-root two children: exp= " + 
+                            str(expect) + " res= " + str(result))
+
+        result = graph.edges(TestNums(2))
+        expect = [TestNums(4)]
+        self.assertItemsEqual(result,expect,"non-root one child: exp= " + 
+                            str(expect) + " res= " + str(result))
+ 
+        graph.add_edge(TestNums(4),root)
+        result = graph.edges(TestNums(4))
+        expect = []
+        self.assertItemsEqual(result,expect,"No loops: exp= " + 
+                            str(expect) + " res= " + str(result))
         
-    def test_int_LCA(self):
+    def test_LCA(self):
         graph = LCAGraph()
-        root = 1
+        root = TestNums(1)
         graph.add_node(root)
-        graph.add_edge(root,2)
-        graph.add_edge(root,3)
-        graph.add_edge(2,4)
-        graph.add_edge(2,5)
-        graph.add_edge(3,6)
-        graph.add_edge(3,7)
-        self.assertEqual(graph.lowest_common_ancestor(root,[4,5]),2,
-        "two leaf nodes same parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,[4,6]),1,
-        "two leaf nodes different parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,[3,4]),1,
-        "one leaf node and one non-leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,[2,4]),2,
-        "parent and child leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,[1,4]),1,
-        "leaf node and root with params swapped")
-        graph.add_node(9)
+        graph.add_edge(root,TestNums(2))
+        graph.add_edge(root,TestNums(3))
+        graph.add_edge(TestNums(2),TestNums(4))
+        graph.add_edge(TestNums(2),TestNums(5))
+        graph.add_edge(TestNums(3),TestNums(6))
+        graph.add_edge(TestNums(3),TestNums(7))
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"two leaf nodes same parent: exp= " 
+                        + str(expect) + " res= " + str(result))
+
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(6)])
+        expect = TestNums(1)
+        self.assertEqual(result,expect,"two leaf nodes different parent: exp= " 
+                        + str(expect) + " res= " + str(result))
+
+        result = graph.lowest_common_ancestor(root,[TestNums(3),TestNums(4)])
+        expect = TestNums(1)
+        self.assertEqual(result,expect,"one leaf node and one non-leaf node: exp= " 
+                        + str(expect) + " res= " + str(result))
+
+        result = graph.lowest_common_ancestor(root,[TestNums(2),TestNums(4)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"parent and child leaf node: exp= " 
+                        + str(expect) + " res= " + str(result))
+
+        result = graph.lowest_common_ancestor(root,[TestNums(1),TestNums(4)])
+        expect = TestNums(1)
+        self.assertEqual(result,expect,"leaf node and root with params swapped: exp= " 
+                        + str(expect) + " res= " + str(result))
+        
+        graph.add_node(TestNums(9))
         # checking doesnt give false positives
-        self.assertIsNone(graph.lowest_common_ancestor(root,[2,8]),
-        "lca non-existent node")
-        self.assertIsNone(graph.lowest_common_ancestor(root,[1,9]),
-        "lca disconnected node")
-        self.assertIsNone(graph.lowest_common_ancestor(2,[3,6]),
-        "Doesnt recurse past root and treats as seperate components")
+        self.assertIsNone(
+            graph.lowest_common_ancestor(root,[TestNums(2),TestNums(8)]),
+            "lca non-existent node")
+        
+        self.assertIsNone(
+            graph.lowest_common_ancestor(root,[TestNums(1),TestNums(9)]),
+            "lca disconnected node")
+
+        self.assertIsNone(
+            graph.lowest_common_ancestor(TestNums(2),[TestNums(3),TestNums(6)]),
+            "Doesnt recurse past root and treats as seperate components")
+
+        self.assertIsNone(
+            graph.lowest_common_ancestor(root,[]),
+            "Empty node list")
+        
         # checking gives correct answer if two params same
-        self.assertEqual(graph.lowest_common_ancestor(root,[1,1]),1,
-        "root and both nodes root")
-        self.assertEqual(graph.lowest_common_ancestor(root,[2,1]),1,
-        "root and child node with lca = root")
-        self.assertEqual(graph.lowest_common_ancestor(root,[2,2]),2,
-        "child with both nodes child")
+        result = graph.lowest_common_ancestor(root,[TestNums(1),TestNums(1)])
+        expect = TestNums(1)
+        self.assertEqual(result,expect,"root and both nodes root: exp= " 
+                        + str(expect) + " res= " + str(result))
+        
+        result = graph.lowest_common_ancestor(root,[TestNums(2),TestNums(1)])
+        expect = TestNums(1)
+        self.assertEqual(result,expect,"root and child node with lca = root: exp= " 
+                        + str(expect) + " res= " + str(result))
+        
+        result = graph.lowest_common_ancestor(root,[TestNums(2),TestNums(2)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"child with both nodes child: exp= " 
+                        + str(expect) + " res= " + str(result))
     
-    def test_int_mulitple_nodes_LCA(self):
+    def test_mulitple_nodes_LCA(self):
         graph = LCAGraph()
-        root = 1
+        root = TestNums(1)
         graph.add_node(root)
-        graph.add_edge(root,2)
-        graph.add_edge(root,3)
-        graph.add_edge(2,4)
-        graph.add_edge(2,5)
-        graph.add_edge(3,6)
-        graph.add_edge(3,7)
-        graph.add_edge(4,8)
-        graph.add_edge(4,9)
-        graph.add_edge(5,10)
-        graph.add_edge(5,11)
-        graph.add_edge(6,12)
-        graph.add_edge(6,13)
-        graph.add_edge(7,14)
-        graph.add_edge(7,15)
-        self.assertEqual(graph.lowest_common_ancestor(root,[8,9,11,10]),2,
-        "4 leaf nodes")
-        self.assertEqual(graph.lowest_common_ancestor(root,[8,9,4]),4,
-        "2 leaf nodes and parent:expected 4 but got" + 
-            str(graph.lowest_common_ancestor(root,[4,8,9])))
-        self.assertEqual(graph.lowest_common_ancestor(root,[8,9,12,13,10,11,14,15]),root,
-        "8 leaf nodes: expect 1 got" + 
-            str(graph.lowest_common_ancestor(root,[4,8,9])))
+        graph.add_edge(root,TestNums(2))
+        graph.add_edge(root,TestNums(3))
+        graph.add_edge(TestNums(2),TestNums(4))
+        graph.add_edge(TestNums(2),TestNums(5))
+        graph.add_edge(TestNums(3),TestNums(6))
+        graph.add_edge(TestNums(3),TestNums(7))
+        graph.add_edge(TestNums(4),TestNums(8))
+        graph.add_edge(TestNums(4),TestNums(9))
+        graph.add_edge(TestNums(5),TestNums(10))
+        graph.add_edge(TestNums(5),TestNums(11))
+        graph.add_edge(TestNums(6),TestNums(12))
+        graph.add_edge(TestNums(6),TestNums(13))
+        graph.add_edge(TestNums(7),TestNums(14))
+        graph.add_edge(TestNums(7),TestNums(15))
+        result = graph.lowest_common_ancestor(
+            root,[TestNums(8),TestNums(9),TestNums(11),TestNums(10)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"4 leaf nodes: exp= " 
+                        + str(expect) + " res= " + str(result))
+        
+        result = graph.lowest_common_ancestor(root,[TestNums(8),TestNums(9),TestNums(4)])
+        expect = TestNums(4)
+        self.assertEqual(result,expect,"2 leaf nodes and parent: exp= " 
+                        + str(expect) + " res= " + str(result))
 
-    def test_string_mulitple_nodes_LCA(self):
+        result = graph.lowest_common_ancestor(
+            root,[TestNums(8),TestNums(9),TestNums(12),TestNums(13),
+            TestNums(10),TestNums(11),TestNums(14),TestNums(15)])
+        expect = root
+        self.assertEqual(result,expect,"8 leaf nodes: exp= " 
+                        + str(expect) + " res= " + str(result))
+
+    def test_dag_LCA(self):
         graph = LCAGraph()
-        root = "1"
+        one = TestNums(TestNums(1))
+        root = one
         graph.add_node(root)
-        graph.add_edge(root,"2")
-        graph.add_edge(root,"3")
-        graph.add_edge("2","4")
-        graph.add_edge("2","5")
-        graph.add_edge("3","6")
-        graph.add_edge("3","7")
-        graph.add_edge("4","8")
-        graph.add_edge("4","9")
-        graph.add_edge("5","10")
-        graph.add_edge("5","11")
-        graph.add_edge("6","12")
-        graph.add_edge("6","13")
-        graph.add_edge("7","14")
-        graph.add_edge("7","15")
-        self.assertEqual(graph.lowest_common_ancestor(root,["8","9","11","10"]),"2",
-        "4 leaf nodes")
-        self.assertEqual(graph.lowest_common_ancestor(root,["8","9","4"]),"4",
-        "2 leaf nodes and parent:expected 4 but got" + 
-            str(graph.lowest_common_ancestor(root,["4","8","9"])))
-        self.assertEqual(graph.lowest_common_ancestor(root,["8","9","12","13","10","11","14","15"]),root,
-        "8 leaf nodes: expect 1 got" + 
-            str(graph.lowest_common_ancestor(root,["4","8","9"])))
+        graph.add_edge(root,TestNums(2))
+        graph.add_edge(TestNums(2),TestNums(3))
+        graph.add_edge(TestNums(2),TestNums(4))
+        graph.add_edge(TestNums(3),TestNums(4))
+        graph.add_edge(TestNums(2),TestNums(5))
+        graph.add_edge(TestNums(3),TestNums(5))
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5)])
+        expect = TestNums(3)
+        self.assertEqual(result,expect,"2 leaf nodes: exp= " + 
+                        str(expect) + " res= " + str(result))
 
-    def test_string_LCA(self):
-        graph = LCAGraph()
-        root = "1"
-        graph.add_node(root)
-        graph.add_edge(root,"2")
-        graph.add_edge(root,"3")
-        graph.add_edge("2","4")
-        graph.add_edge("2","5")
-        graph.add_edge("3","6")
-        graph.add_edge("3","7")
-        self.assertEqual(graph.lowest_common_ancestor(root,["4","5"]),"2",
-        "two leaf nodes same parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,["4","6"]),"1",
-        "two leaf nodes different parent")
-        self.assertEqual(graph.lowest_common_ancestor(root,["3","4"]),"1",
-        "one leaf node and one non-leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,["2","4"]),"2",
-        "parent and child leaf node")
-        self.assertEqual(graph.lowest_common_ancestor(root,["1","4"]),"1",
-        "leaf node and root with params swapped")
-        graph.add_node("9")
-        # checking doesnt give false positives
-        self.assertIsNone(graph.lowest_common_ancestor(root,["2","8"]),
-        "lca non-existent node")
-        self.assertIsNone(graph.lowest_common_ancestor(root,["1","9"]),
-        "lca disconnected node")
-        self.assertIsNone(graph.lowest_common_ancestor("2",["3","6"]),
-        "Doesnt recurse past root and treats as seperate components")
-        # checking gives correct answer if two params same
-        self.assertEqual(graph.lowest_common_ancestor(root,["1","1"]),"1",
-        "root and both nodes root")
-        self.assertEqual(graph.lowest_common_ancestor(root,["2","1"]),"1",
-        "root and child node with lca = root")
-        self.assertEqual(graph.lowest_common_ancestor(root,["2","2"]),"2",
-        "child with both nodes child")
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5),TestNums(3)])
+        expect = TestNums(3)
+        self.assertEqual(result,expect,"three nodes one parent: exp= " + 
+                        str(expect) + " res= " + str(result))
 
+        graph.add_edge(root,TestNums(6))
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5),TestNums(6)])
+        expect = root
+        self.assertEqual(result,expect,"three leaf nodes different branches: exp=" + 
+                        str(expect) + " res=" + str(result))
+
+        graph.add_edge(TestNums(2),TestNums(7))
+        result = graph.lowest_common_ancestor(root,[TestNums(4),TestNums(5),TestNums(7)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"three leaf nodes same parent: exp=" + 
+                        str(expect) + " res=" + str(result))
+        
+        graph.add_edge(TestNums(6),TestNums(7))
+        graph.add_edge(TestNums(6),TestNums(8))
+        graph.add_edge(TestNums(2),TestNums(8))
+        result = graph.lowest_common_ancestor(root,[TestNums(8),TestNums(7)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"two lcas-should pick first one: exp=" + 
+                        str(expect) + " res=" + str(result))
+        
+        result = graph.lowest_common_ancestor(root,[TestNums(7),TestNums(7)])
+        expect = TestNums(7)
+        self.assertEqual(result,expect,"Same node twice: exp=" + 
+                        str(expect) + " res=" + str(result))
+
+class TestNums(object):
+    # Test object, also implements str for easy debugging in unit test
+    # Can prove it works generally for all classes that implement eq and hash
+    # By using dummy object as parameter
+    def __init__(self,value):
+        self.value =  value
+    
+    def __eq__(self,other):
+        if isinstance(other, self.__class__):
+            return self.value == other.value
+    
+    def __str__(self):
+        return str(self.value)
+    
+    def __hash__(self):
+        return hash(self.value)
 
 
 if __name__ == "__main__":
