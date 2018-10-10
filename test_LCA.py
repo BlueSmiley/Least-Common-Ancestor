@@ -2,7 +2,6 @@
 
 import unittest
 from graphlca import LCAGraph
-from collections import Counter
 
 class LCATest(unittest.TestCase):
 
