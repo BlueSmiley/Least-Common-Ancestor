@@ -146,14 +146,23 @@ class LCATest(unittest.TestCase):
         graph.add_edge(TestNums(6),TestNums(13))
         graph.add_edge(TestNums(7),TestNums(14))
         graph.add_edge(TestNums(7),TestNums(15))
-        self.assertEqual(graph.lowest_common_ancestor(root,[TestNums(8),TestNums(9),TestNums(11),TestNums(10)]),TestNums(2),
-        "TestNums(4) leaf nodes")
-        self.assertEqual(graph.lowest_common_ancestor(root,[TestNums(8),TestNums(9),TestNums(4)]),TestNums(4),
-        "TestNums(2) leaf nodes and parent:expected TestNums(4) but got " + 
-            str(graph.lowest_common_ancestor(root,[TestNums(4),TestNums(8),TestNums(9)])))
-        self.assertEqual(graph.lowest_common_ancestor(root,[TestNums(8),TestNums(9),TestNums(12),TestNums(13),TestNums(10),TestNums(11),TestNums(14),TestNums(15)]),root,
-        "TestNums(8) leaf nodes: expect TestNums(1) got " + 
-            str(graph.lowest_common_ancestor(root,[TestNums(4),TestNums(8),TestNums(9)])))
+        result = graph.lowest_common_ancestor(
+            root,[TestNums(8),TestNums(9),TestNums(11),TestNums(10)])
+        expect = TestNums(2)
+        self.assertEqual(result,expect,"4 leaf nodes: exp= " 
+                        + str(expect) + " res= " + str(result))
+        
+        result = graph.lowest_common_ancestor(root,[TestNums(8),TestNums(9),TestNums(4)])
+        expect = TestNums(4)
+        self.assertEqual(result,expect,"2 leaf nodes and parent: exp= " 
+                        + str(expect) + " res= " + str(result))
+
+        result = graph.lowest_common_ancestor(
+            root,[TestNums(8),TestNums(9),TestNums(12),TestNums(13),
+            TestNums(10),TestNums(11),TestNums(14),TestNums(15)])
+        expect = root
+        self.assertEqual(result,expect,"8 leaf nodes: exp= " 
+                        + str(expect) + " res= " + str(result))
 
     def test_dag_LCA(self):
         graph = LCAGraph()
