@@ -1,6 +1,6 @@
-# softeng1
+# Least Common Ancestor
 
-A repository for software engineering project 1
+A repository for software engineering project 1 - Finding the least common ancestor of a binary tree/directed acyclic graph
 
 # Table of Contents
 ---
