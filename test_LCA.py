@@ -238,6 +238,12 @@ class LCATest(unittest.TestCase):
         self.assertEqual(result,expect,"Pick lca with greater depth even if second: exp=" + 
                         str(expect) + " res=" + str(result))
 
+# This method does not prove the original code only uses __eq__ and __hash__ 
+# By default it subclasses the object class which has in built defaults
+# If a class overrides the other default comparison methods and
+# if program secretly used other comparisons with assumption that all keys
+# only implement base object class comparisons
+# Then this method would not catch those errors.
 class TestNums(object):
     # Test object, also implements str for easy debugging in unit test
     # Can prove it works generally for all classes that implement eq and hash
