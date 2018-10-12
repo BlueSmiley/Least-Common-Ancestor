@@ -2,7 +2,6 @@
 
 import unittest
 from graphlca import LCAGraph
-from collections import Counter
 
 class LCATest(unittest.TestCase):
 
@@ -58,6 +57,27 @@ class LCATest(unittest.TestCase):
         expect = []
         self.assertItemsEqual(result,expect,"No loops: exp= " + 
                             str(expect) + " res= " + str(result))
+        
+        graph.add_node(root)
+        result = graph.edges(root)
+        expect = [TestNums(1),TestNums(2)]
+        self.assertItemsEqual(result,expect,"Adding existing node: exp= " + 
+                            str(expect) + " res= " + str(result))
+        
+        graph.add_edge(root,TestNums(6))
+        result = graph.edges(root)
+        expect = [TestNums(1),TestNums(2),TestNums(6)]
+        self.assertItemsEqual(result,expect,"Three children new node: exp= " + 
+                            str(expect) + " res= " + str(result))
+        
+        graph.add_edge(root,TestNums(5))
+        result = graph.edges(root)
+        expect = [TestNums(1),TestNums(2),TestNums(6),TestNums(5)]
+        self.assertItemsEqual(result,expect,"Four children existing node: exp= " + 
+                            str(expect) + " res= " + str(result))
+        
+        graph.add_edge(TestNums(7),TestNums(5))
+        self.assertRaises(KeyError,graph.edges,TestNums(7))
         
     def test_LCA(self):
         graph = LCAGraph()
@@ -202,12 +222,20 @@ class LCATest(unittest.TestCase):
         graph.add_edge(TestNums(2),TestNums(8))
         result = graph.lowest_common_ancestor(root,[TestNums(8),TestNums(7)])
         expect = TestNums(2)
-        self.assertEqual(result,expect,"two lcas-should pick first one: exp=" + 
+        self.assertEqual(result,expect,"two equal depth lcas-should pick first one: exp=" + 
                         str(expect) + " res=" + str(result))
         
         result = graph.lowest_common_ancestor(root,[TestNums(7),TestNums(7)])
         expect = TestNums(7)
         self.assertEqual(result,expect,"Same node twice: exp=" + 
+                        str(expect) + " res=" + str(result))
+        
+        graph.add_edge(TestNums(6),TestNums(9))
+        graph.add_edge(TestNums(9),TestNums(7))
+        graph.add_edge(TestNums(9),TestNums(8))
+        result = graph.lowest_common_ancestor(root,[TestNums(8),TestNums(7)])
+        expect = TestNums(9)
+        self.assertEqual(result,expect,"Pick lca with greater depth even if second: exp=" + 
                         str(expect) + " res=" + str(result))
 
 class TestNums(object):

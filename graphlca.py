@@ -1,4 +1,3 @@
-from collections import Counter
 
 class LCAGraph(object):
     """
@@ -180,11 +179,6 @@ class LCAGraph(object):
             # if first match then lowest depth = current node
             if len(matchedlist) == 1:
                 currentlowest = (depth,current)
-        # If still in matching phase and reached node with less depth, then
-        # lca always node with lowest level that is found between euler tour
-        # between target nodes
-        if len(matchedlist) > 0 and depth < currentlowest[0]:
-            currentlowest = (depth,current)
         # If all matched and we find lca with greater depth then replace
         # Clear matchedlist to show euler tour between target nodes complete
         if len(matchedlist) == len(nodelist):
@@ -197,17 +191,17 @@ class LCAGraph(object):
             # of euler tour of child nodes
             matchedlist,foundlowest,currentlowest = self.lca(child,nodelist,
                 matchedlist,depth+1,foundlowest,currentlowest)
-            # Repeat procedure used at start 
+            # Repeat almost same procedure used at start 
             if current in nodelist and current not in matchedlist:
                 matchedlist.append(current)
                 if len(matchedlist) == 1:
                     currentlowest = (depth,current)
+            # If still in matching phase and recursed to node with less depth,
+            # then lca always node with lowest level that is found during euler 
+            # tour between target nodes
             if len(matchedlist) > 0 and depth < currentlowest[0]:
                 currentlowest = (depth,current)
-            if len(matchedlist) == len(nodelist):
-                if currentlowest[0] > foundlowest[0]:
-                    foundlowest = currentlowest 
-                matchedlist = []
+            # Never going to recurse to a target branch to match last node
         
         return matchedlist,foundlowest,currentlowest
         
